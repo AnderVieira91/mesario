@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="001" author="andersonvieira">
+        <createSequence sequenceName="SEQ_CAMPEONATO"/>
+    </changeSet>
+
+    <changeSet id="002" author="andersonvieira">
+        <createTable tableName="CAMPEONATO">
+            <column name="ID" type="java.sql.Types.BIGINT">
+                <constraints primaryKeyName="PK_CAMPEONATO" primaryKey="true"/>
+            </column>
+            <column name="NOME" type="java.sql.Types.VARCHAR(100)">
+                <constraints notNullConstraintName="NN_CAMPEONATO_NOME" nullable="false"/>
+            </column>
+            <column name="DATA_INICIO" type="java.sql.Types.DATE">
+                <constraints notNullConstraintName="NN_CAMPEONATO_DATA_INICIO" nullable="false"/>
+            </column>
+            <column name="DATA_FIM" type="java.sql.Types.DATE">
+                <constraints notNullConstraintName="NN_CAMPEONATO_DATA_FIM" nullable="false"/>
+            </column>
+            <column name="CAMPEAO_ID" type="java.sql.Types.BIGINT">
+                <constraints foreignKeyName="FK_CAMPEONATO_CAMPEAO"
+                             referencedTableName="TIME"
+                             referencedColumnNames="ID"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="003" author="andersonvieira">
+        <addUniqueConstraint columnNames="NOME, DATA_INICIO" constraintName="UN_CAMPEONATO"
+                             tableName="CAMPEONATO"/>
+    </changeSet>
+
+    <changeSet id="004" author="andersonvieira">
+        <createIndex indexName="IN_CAMPEONATO_NOME" tableName="CAMPEONATO">
+            <column name="NOME"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="005" author="andersonvieira">
+        <createTable tableName="CAMPEONATO_TIME">
+            <column name="CAMPEONATO_ID" type="java.sql.Types.BIGINT">
+                <constraints foreignKeyName="FK_CAMPEONATO_TIME_CAMPEONATO"
+                             referencedTableName="CAMPEONATO"
+                             referencedColumnNames="ID" />
+            </column>
+            <column name="TIME_ID" type="java.sql.Types.BIGINT">
+                <constraints foreignKeyName="FK_CAMPEONATO_TIME_TIME"
+                             referencedTableName="TIME"
+                             referencedColumnNames="ID" />
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

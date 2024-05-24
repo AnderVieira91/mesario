@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="001" author="andersonvieira">
+        <createSequence sequenceName="SEQ_JOGADOR"/>
+    </changeSet>
+
+    <changeSet id="002" author="andersonvieira">
+        <createTable tableName="JOGADOR">
+            <column name="ID" type="java.sql.Types.BIGINT">
+                <constraints primaryKeyName="PK_JOGADOR" primaryKey="true"/>
+            </column>
+            <column name="APELIDO" type="java.sql.Types.VARCHAR(60)"/>
+            <column name="APELIDO_NORMALIZADO" type="java.sql.Types.VARCHAR(60)"/>
+            <column name="CPF" type="java.sql.Types.BIGINT">
+                <constraints
+                        notNullConstraintName="NN_JOGADOR_CPF" nullable="false"
+                        uniqueConstraintName="UN_JOGADOR_CPF" unique="true"/>
+            </column>
+            <column name="NOME" type="java.sql.Types.VARCHAR(100)">
+                <constraints notNullConstraintName="NN_JOGADOR_NOME" nullable="false"/>
+            </column>
+            <column name="NOME_NORMALIZADO" type="java.sql.Types.VARCHAR(100)">
+                <constraints notNullConstraintName="NN_JOGADOR_NOME_NORMALIZADO" nullable="false"/>
+            </column>
+            <column name="DATA_NASCIMENTO" type="java.sql.Types.DATE">
+                <constraints notNullConstraintName="NN_JOGADOR_DATA_NASCIMENTO" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="003" author="andersonvieira">
+        <createIndex indexName="IN_JOGADOR_NOME_APELIDO" tableName="JOGADOR">
+            <column name="NOME"/>
+            <column name="NOME_NORMALIZADO"/>
+            <column name="APELIDO"/>
+            <column name="APELIDO_NORMALIZADO"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,102 @@
+version: "3.9"
+services:
+  mesario:
+    container_name: mesario_server
+    image: mesario
+    restart: always
+    build: ./apache/
+    depends_on:
+      elasticsearch-mesario:
+        condition: service_started
+      keycloak-mesario:
+        condition: service_healthy
+      mesario-db:
+        condition: service_healthy
+    environment:
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000
+    ports:
+      - "8080:8080"
+      - "8000:8000"
+    networks:
+      - mesario-network
+
+  mesario-db:
+    container_name: mesario-db
+    image: postgres:13
+    restart: always
+    volumes:
+      - /dev/urandom:/dev/random:ro
+      - $PWD/initdb:/docker-entrypoint-initdb.d:ro
+      - mesario-data:/var/lib/postgresql/data:rw
+    environment:
+      - POSTGRES_USER=mesario
+      - POSTGRES_PASSWORD=mesario
+      - POSTGRES_DB=mesario
+    ports:
+      - "5432:5432"
+    networks:
+      - mesario-network
+    healthcheck:
+      test: [ "CMD-SHELL", "psql -U keycloak -w" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  keycloak-mesario:
+    container_name: keycloak-mesario
+    image: touch/keycloak
+    restart: always
+    depends_on:
+      mesario-db:
+        condition: service_healthy
+    volumes:
+      - ./keycloak/script/healthcheck.sh:/opt/keycloak/healthcheck.sh
+    environment:
+      - KC_DB=postgres
+      - KC_DB_URL_HOST=mesario-db
+      - KC_DB_URL_DATABASE=keycloak
+      - KC_DB_URL_PORT=5432
+      - KC_DB_USERNAME=keycloak
+      - KC_DB_PASSWORD=keycloak
+      - KC_HEALTH_ENABLED=true
+      - KC_HOSTNAME=192.168.5.125
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    command:
+      - start-dev
+      - --http-relative-path=/auth
+    build: ./keycloak/
+    ports:
+      - "9090:8080"
+    networks:
+      - mesario-network
+    healthcheck:
+      test: "bash /opt/keycloak/healthcheck.sh"
+      interval: 15s
+      timeout: 5s
+      retries: 15
+
+  elasticsearch-mesario:
+    container_name: elasticsearch-mesario
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.9.1
+    restart: always
+    volumes:
+      - mesario-esdata:/usr/share/elasticsearch/data
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - mesario-network
+
+
+networks:
+  mesario-network:
+    driver: bridge
+
+volumes:
+  mesario-data:
+  mesario-esdata:

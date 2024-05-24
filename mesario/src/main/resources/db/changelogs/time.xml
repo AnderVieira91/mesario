@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="001" author="andersonvieira">
+        <createSequence sequenceName="SEQ_TIME"/>
+    </changeSet>
+
+    <changeSet id="002" author="andersonvieira">
+        <createTable tableName="TIME">
+            <column name="ID" type="java.sql.Types.BIGINT">
+                <constraints primaryKeyName="PK_TIME" primaryKey="true"/>
+            </column>
+            <column name="NOME" type="java.sql.Types.VARCHAR(100)">
+                <constraints notNullConstraintName="NN_TIME_NOME" nullable="false"/>
+            </column>
+            <column name="TECNICO_ID" type="java.sql.Types.BIGINT">
+                <constraints foreignKeyName="FK_TIME_TECNICO"
+                             referencedTableName="JOGADOR"
+                             referencedColumnNames="ID"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="003" author="andersonvieira">
+        <createIndex indexName="IN_TIME_NOME_APELIDO" tableName="TIME">
+            <column name="NOME"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="004" author="andersonvieira">
+        <createTable tableName="TIME_JOGADOR">
+            <column name="TIME_ID" type="java.sql.Types.BIGINT">
+                <constraints foreignKeyName="FK_TIME_JOGADOR_TIME"
+                             referencedTableName="TIME"
+                             referencedColumnNames="ID"/>
+            </column>
+            <column name="JOGADOR_ID" type="java.sql.Types.BIGINT">
+                <constraints foreignKeyName="FK_TIME_JOGADOR_TIME_JOGADOR"
+                             referencedTableName="JOGADOR"
+                             referencedColumnNames="ID"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

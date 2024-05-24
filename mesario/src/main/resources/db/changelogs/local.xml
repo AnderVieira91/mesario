@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="001" author="andersonvieira">
+        <createSequence sequenceName="SEQ_LOCAL"/>
+    </changeSet>
+
+    <changeSet id="002" author="andersonvieira">
+        <createTable tableName="LOCAL">
+            <column name="ID" type="java.sql.Types.BIGINT">
+                <constraints primaryKeyName="PK_LOCAL" primaryKey="true"/>
+            </column>
+            <column name="NOME" type="java.sql.Types.VARCHAR(100)">
+                <constraints notNullConstraintName="NN_LOCAL_NOME" nullable="false"/>
+            </column>
+            <column name="ENDERECO" type="java.sql.Types.VARCHAR(300)">
+                <constraints notNullConstraintName="NN_LOCAL_ENDERECO" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="003" author="andersonvieira">
+        <createIndex indexName="IN_LOCAL_NOME" tableName="LOCAL">
+            <column name="NOME"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
