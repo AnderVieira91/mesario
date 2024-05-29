@@ -49,6 +49,10 @@ public class SegurancaConfiguracao {
 
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+        // utilizará o login do usuário como o atributo name do principal, caso esse valor não seja informado
+        // o atributo name será o id do usuário no keycloak, que no caso seria ao invés de preferred_username o valor
+        // seria sub
+        jwtAuthenticationConverter.setPrincipalClaimName("preferred_username");
         return jwtAuthenticationConverter;
     }
 

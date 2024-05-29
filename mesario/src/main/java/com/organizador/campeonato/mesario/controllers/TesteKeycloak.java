@@ -1,6 +1,8 @@
 package com.organizador.campeonato.mesario.controllers;
 
 
+import java.security.Principal;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +27,8 @@ public class TesteKeycloak {
      */
     @GetMapping(value = "/has-role")
     @PreAuthorize("hasAnyAuthority('user')")
-    public ResponseEntity<Void> isUser() {
+    public ResponseEntity<Void> isUser(Principal principal) {
+        System.out.println(principal.getName());
         return ResponseEntity.ok().build();
     }
 
